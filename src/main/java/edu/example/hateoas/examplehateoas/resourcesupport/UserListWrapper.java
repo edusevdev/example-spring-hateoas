@@ -1,0 +1,148 @@
+package edu.example.hateoas.examplehateoas.resourcesupport;
+
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class UserListWrapper extends ResourceSupport  implements Page<UserWrapper>{
+
+    private final Page<UserWrapper> page;
+
+    private static final String PAGE_PARAM = "page";
+    private static final String SIZE = "size";
+
+    public UserListWrapper( Page<UserWrapper> page ) {
+        super();
+        this.page = page;
+        if (page.hasPreviousPage()) {
+            String path = createBuilder().queryParam(PAGE_PARAM, page.getNumber() - 1)
+                    .queryParam(SIZE, page.getSize()).build().toUriString();
+            Link link = new Link(path, Link.REL_PREVIOUS);
+            add(link);
+        }
+        if (page.hasNextPage()) {
+            String path = createBuilder()
+                    .queryParam("page", page.getNumber() + 1)
+                    .queryParam("size", page.getSize())
+                    .build().toUriString();
+            Link link = new Link(path, Link.REL_NEXT);
+            add(link);
+        }
+
+        Link link = buildPageLink(PAGE_PARAM, 0, SIZE, page.getSize(), Link.REL_FIRST);
+        add(link);
+
+        int indexOfLastPage = page.getTotalPages() - 1;
+        link = buildPageLink(PAGE_PARAM, indexOfLastPage, SIZE, page.getSize(), Link.REL_LAST);
+        add(link);
+
+        link = buildPageLink(PAGE_PARAM, page.getNumber(), SIZE, page.getSize(), Link.REL_SELF);
+        add(link);
+    }
+
+    private ServletUriComponentsBuilder createBuilder() {
+        return ServletUriComponentsBuilder.fromCurrentRequestUri();
+    }
+
+    private Link buildPageLink(String pageparam, int page, String pagesize, int size, String rel) {
+        String path = createBuilder().queryParam(pageparam, page).queryParam(pagesize, size).build().toUriString();
+        return new Link(path, rel);
+    }
+
+    @Override
+    @JsonProperty("page")
+    public int getNumber() {
+        return page.getNumber();
+    }
+
+    @Override
+    public int getSize() {
+        return page.getSize();
+    }
+
+    @Override
+    public int getTotalPages() {
+        return page.getTotalPages();
+    }
+
+    @Override
+    @JsonProperty("currentSize")
+    public int getNumberOfElements() {
+        return page.getNumberOfElements();
+    }
+
+    @Override
+    @JsonProperty("totalCount")
+    public long getTotalElements() {
+        return page.getTotalElements();
+    }
+
+    @Override
+    public boolean hasPreviousPage() {
+        return false;
+    }
+
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+        return false;
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
+    }
+
+    @Override
+    public Iterator<UserWrapper> iterator() {
+        return page.iterator();
+    }
+
+    @Override
+    @JsonProperty("results")
+    public List<UserWrapper> getContent() {
+        return page.getContent();
+    }
+
+    @Override
+    public boolean hasContent() {
+        return page.hasContent();
+    }
+
+    @Override
+    @JsonIgnore
+    public Sort getSort() {
+        return page.getSort();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.hashCode();
+    }
+
+    @Override
+    @JsonProperty("_links")
+    @JsonIgnoreProperties({"media", "hreflang", "title", "type", "deprecation"})
+    public List<Link> getLinks() {
+        return super.getLinks();
+    }
+
+}
