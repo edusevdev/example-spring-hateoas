@@ -1,11 +1,26 @@
 package edu.example.hateoas.examplehateoas.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "USER")
 public class User {
 
+    @Id
+    @Column(name = "ID_USER", nullable = false)
+    private String idUser;
+    @Column(name = "USERNAME", nullable = false)
     private String username;
+    @Column(name = "PASS", nullable = false)
     private String password;
+    @Column(name = "NAME")
     private String name;
+    @Column(name = "SURNAME1")
     private String surname1;
+    @Column(name = "SURNAME2")
     private String surname2;
 
     public User(){
