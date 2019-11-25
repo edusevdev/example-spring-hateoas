@@ -13,6 +13,7 @@ public class ExampleHateoasApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ExampleHateoasApplication.class, args);
 		logConnectionH2();
+		logSwagger();
 	}
 
 	private static void logConnectionH2() {
@@ -21,6 +22,12 @@ public class ExampleHateoasApplication {
 		LOGGER.info("##################################################");
 		LOGGER.info("## H2 CONSOLE: http://localhost:8080/h2-console ##");
 		LOGGER.info("## JDBC URL: jdbc:h2:mem:testdb                 ##");
+		LOGGER.info("##################################################");
+	}
+
+	private static void logSwagger() {
+		LOGGER.info("##################################################");
+		LOGGER.info("# Swagger: http://localhost:8080/swagger-ui.html #");
 		LOGGER.info("##################################################");
 	}
 
