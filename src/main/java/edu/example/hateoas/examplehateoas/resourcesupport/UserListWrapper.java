@@ -2,8 +2,10 @@ package edu.example.hateoas.examplehateoas.resourcesupport;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -13,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserListWrapper extends ResourceSupport  implements Page<UserWrapper>{
+public class UserListWrapper extends ResourceSupport implements Page<UserWrapper>{
 
     private final Page<UserWrapper> page;
 
@@ -23,13 +25,13 @@ public class UserListWrapper extends ResourceSupport  implements Page<UserWrappe
     public UserListWrapper( Page<UserWrapper> page ) {
         super();
         this.page = page;
-        if (page.hasPreviousPage()) {
+        if (page.hasPrevious()) {
             String path = createBuilder().queryParam(PAGE_PARAM, page.getNumber() - 1)
                     .queryParam(SIZE, page.getSize()).build().toUriString();
             Link link = new Link(path, Link.REL_PREVIOUS);
             add(link);
         }
-        if (page.hasNextPage()) {
+        if (page.hasNext()) {
             String path = createBuilder()
                     .queryParam("page", page.getNumber() + 1)
                     .queryParam("size", page.getSize())
@@ -59,7 +61,6 @@ public class UserListWrapper extends ResourceSupport  implements Page<UserWrappe
     }
 
     @Override
-    @JsonProperty("page")
     public int getNumber() {
         return page.getNumber();
     }
@@ -75,35 +76,18 @@ public class UserListWrapper extends ResourceSupport  implements Page<UserWrappe
     }
 
     @Override
-    @JsonProperty("currentSize")
     public int getNumberOfElements() {
         return page.getNumberOfElements();
     }
 
     @Override
-    @JsonProperty("totalCount")
     public long getTotalElements() {
         return page.getTotalElements();
     }
 
     @Override
-    public boolean hasPreviousPage() {
-        return false;
-    }
-
-    @Override
-    public boolean isFirstPage() {
-        return false;
-    }
-
-    @Override
-    public boolean hasNextPage() {
-        return false;
-    }
-
-    @Override
-    public boolean isLastPage() {
-        return false;
+    public <U> Page<U> map(Function<? super UserWrapper, ? extends U> function) {
+        return null;
     }
 
     @Override
@@ -112,7 +96,6 @@ public class UserListWrapper extends ResourceSupport  implements Page<UserWrappe
     }
 
     @Override
-    @JsonProperty("results")
     public List<UserWrapper> getContent() {
         return page.getContent();
     }
@@ -129,6 +112,36 @@ public class UserListWrapper extends ResourceSupport  implements Page<UserWrappe
     }
 
     @Override
+    public boolean isFirst() {
+        return false;
+    }
+
+    @Override
+    public boolean isLast() {
+        return false;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return true;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return true;
+    }
+
+    @Override
+    public Pageable nextPageable() {
+        return null;
+    }
+
+    @Override
+    public Pageable previousPageable() {
+        return null;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         return this.equals(obj);
     }
@@ -139,8 +152,6 @@ public class UserListWrapper extends ResourceSupport  implements Page<UserWrappe
     }
 
     @Override
-    @JsonProperty("_links")
-    @JsonIgnoreProperties({"media", "hreflang", "title", "type", "deprecation"})
     public List<Link> getLinks() {
         return super.getLinks();
     }
