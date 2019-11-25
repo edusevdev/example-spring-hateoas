@@ -23,12 +23,12 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 public class MainController {
 
     @Autowired
-    private UserRepositoryMock userRepositoryMock;
+    private UserRepository userRepository;
 
-    @GetMapping
-    public String hellow() {
-        return "Welcome to spring-hateoas example";
-    }
+//    @GetMapping
+//    public String hellow() {
+//        return "Welcome to spring-hateoas example";
+//    }
 
     @GetMapping("/users")
     public UserListWrapper findAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
